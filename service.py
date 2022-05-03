@@ -66,14 +66,14 @@ def get_count(database):
     count = 0
 
     try:
-        cursor = con.cursor()
-        count = cursor.execute('''SELECT COUNT(text) FROM messages;''').fetchone()[0]
-        con.commit()
-        return count
+        cursor = database.cursor()
+        count = cursor.execute("SELECT COUNT(text) FROM messages;").fetchone()[0]
+        database.commit()
     
     except:
         print("Exception in get_count.")
-        return -1
+    
+    return count
 
 def get_message(database):
     """
@@ -85,11 +85,11 @@ def get_message(database):
     message = None
 
     try:
-        cursor = con.cursor()
+        cursor = database.cursor()
         message = cursor.execute('''SELECT text FROM messages
                                     ORDER BY RANDOM()
                                     LIMIT 1;''')[0]
-        con.commit()
+        database.commit()
         return message
 
     except:
@@ -97,17 +97,25 @@ def get_message(database):
 
     return message
 
-def create_message(message, database):
+def create_message(text, database):
     """
     Inserts a new message into the database. 
     Returns true if the message was created and
     false if there was an error.
 
-    message: A string message.
+    text: A string message.
     database: A connection to sqlite3 database.
     returns: Boolean
     """    
-    pass
+    try:
+        cursor = database.cursor()
+        cursor.execute("INSERT INTO messages VALUES (?);", text)
+        database.commit()
+        return True
+
+    except:
+        print("Exception in create_message")
+        return False
 
 def main():
     """
@@ -155,6 +163,8 @@ def main():
                         comsFile.write("OK")
                 
                 time.sleep(5)
+    
+    return 0
 
 if __name__ == '__main__':
     main()
