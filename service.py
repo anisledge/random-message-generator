@@ -58,11 +58,21 @@ def insert_samples(database):
 def get_count(database):
     """
     Gets the total count of messages in the database.
+    Returns -1 if the operation failed.
 
     database: A connection to a sqlite3 database.
     returns: A number.
     """
-    pass
+    count = 0
+
+    try:
+        cursor = con.cursor()
+        count = cursor.execute('''SELECT COUNT(text) FROM messages;''').fetchone()[0]
+        con.commit()
+        return count
+    
+    except:
+        return -1
 
 def get_message(database):
     """
@@ -98,14 +108,14 @@ def main():
         print("Exiting microservice: Cannot connect to database.")
         return 1
 
-    if not message_table_exists:
+    if not message_table_exists(database):
         print("Message table does not exist. Creating message table.")
-        create_message_table()
+        create_message_table(database)
 
-    count = get_count()
+    count = get_count(database)
     if count <= 0:
         print("There are no messages in the database. Adding sample messages.")
-        insert_samples()
+        insert_samples(database)
     
     print("*****************************************************")
     print("The Random Message Generator Microservice is running.")
@@ -119,14 +129,18 @@ def main():
                 command = comsFile.readline()
 
                 if command == "GET":
-                    if get_message():
+                    message = get_message(database)
+
+                    if message is not None:
                         comsFile.write("OK")
 
                 else if command == "POST":
-                    if create_message():
+                    text = messageFile.readline()
+
+                    if create_message(text, database):
                         comsFile.write("OK")
                 
-                time.sleep(2)
+                time.sleep(5)
 
 if __name__ == '__main__':
     main()
