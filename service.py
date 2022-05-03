@@ -75,7 +75,23 @@ def insert_samples(database):
     database: A connection to a sqlite3 database.
     returns: Boolean
     """
-    pass
+    try:
+        cursor = database.cursor()
+        cursor.execute("INSERT INTO messages VALUES ('Hello there friend');")
+        database.commit()
+        cursor.execute("INSERT INTO messages VALUES ('Hello there Bob');")
+        database.commit()
+        cursor.execute("INSERT INTO messages VALUES ('Hello there World');")
+        database.commit()
+        cursor.execute("INSERT INTO messages VALUES ('Hello there Stacy');")
+        database.commit()
+        cursor.execute("INSERT INTO messages VALUES ('Hello there Marge');")
+        database.commit()
+        return True
+
+    except:
+        print("Exception in insert_samples")
+        return False
 
 def get_count(database):
     """
