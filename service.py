@@ -31,7 +31,19 @@ def message_table_exists(database):
     database: A connection to a sqlite3 database.
     returns: Boolean
     """
-    pass
+    try: 
+        cursor = database.cursor()
+        row = cursor.execute('''SELECT * FROM sqlite_schema
+                          WHERE name="messages";''')
+        database.commit()
+
+        if len(row) > 0:
+            return True
+    
+    except:
+        print("Exception in message_table_exists")
+    
+    return False
 
 def create_message_table(database):
     """
