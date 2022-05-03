@@ -54,7 +54,17 @@ def create_message_table(database):
     database: A connection to a sqlite3 database.
     returns: Boolean
     """
-    pass
+    try:
+        cursor = database.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS messages (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        text VARCHAR(150) NOT NULL);''')
+        database.commit()
+        return True
+    
+    except:
+        print("Exception in create_message_table")
+        return False
 
 def insert_samples(database):
     """
