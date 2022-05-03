@@ -72,6 +72,7 @@ def get_count(database):
         return count
     
     except:
+        print("Exception in get_count.")
         return -1
 
 def get_message(database):
@@ -81,7 +82,20 @@ def get_message(database):
     database: A connection to a sqlite3 database.
     returns: A text string or None.
     """
-    pass
+    message = None
+
+    try:
+        cursor = con.cursor()
+        message = cursor.execute('''SELECT text FROM messages
+                                    ORDER BY RANDOM()
+                                    LIMIT 1;''')[0]
+        con.commit()
+        return message
+
+    except:
+        print("Exception in get_message.")
+
+    return message
 
 def create_message(message, database):
     """
