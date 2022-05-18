@@ -195,8 +195,6 @@ def main():
         command = None
         with open('./coms.txt', 'r') as comsFile:
             command = comsFile.read()
-        
-        print("Command: ", command)
 
         if command == "GET":
 
